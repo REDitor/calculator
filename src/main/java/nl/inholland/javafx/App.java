@@ -1,6 +1,8 @@
 package nl.inholland.javafx;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -9,6 +11,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import static java.lang.Double.parseDouble;
+import static java.lang.Integer.parseInt;
 
 public class App extends Application {
 
@@ -39,6 +44,31 @@ public class App extends Application {
 
         box.getChildren().addAll(numerator, divideSymbol, divider, equalsSymbol, outcome, calculate, reset);
         containter.getChildren().addAll(box, errorLabel);
+
+        calculate.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                try {
+                    errorLabel.setText("");
+                    double result = parseDouble(numerator.getText()) / parseDouble(divider.getText());
+                    outcome.setText(String.valueOf(result));
+                }catch (NumberFormatException nfe) {
+                    errorLabel.setText("Input was in the wrong format...");
+                }catch (ArithmeticException ae) {
+                    errorLabel.setText("Cannot divide by 0!");
+                }
+            }
+        });
+
+        reset.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                numerator.clear();
+                divider.clear();
+                outcome.clear();
+                errorLabel.setText("");
+            }
+        });
 
         errorLabel.setStyle("-fx-text-fill: #ff0000");
         Scene scene = new Scene(containter);
